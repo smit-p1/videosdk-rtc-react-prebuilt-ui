@@ -314,7 +314,7 @@ const useSortActiveParticipants = () => {
   useEffect(() => {
     maxParticipantInMainViewRef.current = maxParticipantInMainView;
     _sortOnModify({ maxParticipantInMainView });
-  }, [maxParticipantInMainView]);
+  }, [maxParticipantInMainView, mMeeting.participants]);
 
   useEffect(() => {
     participantsRef.current = conferenceParticipantsMap;
