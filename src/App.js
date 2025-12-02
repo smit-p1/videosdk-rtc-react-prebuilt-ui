@@ -137,7 +137,8 @@ const App = () => {
       animationsEnabled: "animationsEnabled",
       topbarEnabled: "topbarEnabled",
       notificationAlertsEnabled: "notificationAlertsEnabled",
-      participantNotificationAlertsEnabled: "participantNotificationAlertsEnabled",
+      participantNotificationAlertsEnabled:
+        "participantNotificationAlertsEnabled",
       debug: "debug",
       participantId: "participantId",
       //
@@ -182,6 +183,8 @@ const App = () => {
       screenShareResolution: "screenShareResolution",
       screenShareOptimizationMode: "screenShareOptimizationMode",
       micQuality: "micQuality",
+
+      signalingBaseUrl: "signalingBaseUrl",
     };
 
     Object.keys(paramKeys).forEach((key) => {
@@ -496,6 +499,13 @@ const App = () => {
       paramKeys.micQuality = "speech_standard";
     }
 
+    if (
+      !paramKeys.signalingBaseUrl ||
+      typeof paramKeys.signalingBaseUrl !== "string"
+    ) {
+      paramKeys.signalingBaseUrl = "api.classplus.videosdk.live";
+    }
+
     return paramKeys;
   };
 
@@ -507,10 +517,10 @@ const App = () => {
     return isLGDesktop
       ? maxParticipantGridCount_large_desktop
       : isSMDesktop
-        ? maxParticipantGridCount_desktop
-        : isTab
-          ? maxParticipantGridCount_tab
-          : maxParticipantGridCount_mobile;
+      ? maxParticipantGridCount_desktop
+      : isTab
+      ? maxParticipantGridCount_tab
+      : maxParticipantGridCount_mobile;
   }, [isLGDesktop, isSMDesktop, isTab]);
 
   const paramKeys = useMemo(() => getParams({ maxGridSize }), [maxGridSize]);
@@ -523,21 +533,27 @@ const App = () => {
   const [joinScreenWebCam, setJoinScreenWebCam] = useState(
     paramKeys.joinScreenEnabled === "true"
       ? paramKeys.participantCanToggleSelfWebcam === "true" &&
-      paramKeys.webcamEnabled === "true"
+          paramKeys.webcamEnabled === "true"
       : paramKeys.webcamEnabled === "true"
   );
 
   const [joinScreenMic, setJoinScreenMic] = useState(
     paramKeys.joinScreenEnabled === "true"
       ? paramKeys.participantCanToggleSelfMic === "true" &&
-      paramKeys.micEnabled === "true"
+          paramKeys.micEnabled === "true"
       : paramKeys.micEnabled === "true"
   );
   const [selectedMic, setSelectedMic] = useState({ id: null });
   const [selectedWebcam, setSelectedWebcam] = useState({ id: null });
 
-  const validateMeetingId = async ({ meetingId, token, debug, region }) => {
-    const BASE_URL = "https://api.videosdk.live";
+  const validateMeetingId = async ({
+    meetingId,
+    token,
+    debug,
+    region,
+    baseUrl,
+  }) => {
+    const BASE_URL = `https://${baseUrl ?? "api.classplus.videosdk.live"}`;
 
     const urlMeetingId = `${BASE_URL}/v1/prebuilt/meetings/${meetingId}`;
 
@@ -583,6 +599,7 @@ const App = () => {
         token: paramKeys.token,
         debug: paramKeys.debug === "true",
         region: paramKeys.region,
+        baseUrl: paramKeys.signalingBaseUrl,
       });
     }
   }, [paramKeys]);
@@ -637,8 +654,8 @@ const App = () => {
               paramKeys.theme === appThemes.DARK
                 ? theme.palette.darkTheme.main
                 : paramKeys.theme === appThemes.LIGHT
-                  ? theme.palette.lightTheme.main
-                  : theme.palette.background.default
+                ? theme.palette.lightTheme.main
+                : theme.palette.background.default
             }
             color={
               paramKeys.theme === appThemes.LIGHT
@@ -666,8 +683,8 @@ const App = () => {
               paramKeys.theme === appThemes.DARK
                 ? theme.palette.darkTheme.main
                 : paramKeys.theme === appThemes.LIGHT
-                  ? theme.palette.lightTheme.main
-                  : theme.palette.background.default,
+                ? theme.palette.lightTheme.main
+                : theme.palette.background.default,
           }}
         >
           <CircularProgress size={"4rem"} />
@@ -774,7 +791,8 @@ const App = () => {
             topbarEnabled: paramKeys.topbarEnabled !== "false",
             notificationAlertsEnabled:
               paramKeys.notificationAlertsEnabled !== "false",
-            participantNotificationAlertsEnabled: paramKeys.participantNotificationAlertsEnabled !== "false",
+            participantNotificationAlertsEnabled:
+              paramKeys.participantNotificationAlertsEnabled !== "false",
             debug: paramKeys.debug === "true",
             layoutGridSize: paramKeys.layoutGridSize,
             hideLocalParticipant: paramKeys.hideLocalParticipant === "true",
@@ -822,13 +840,14 @@ const App = () => {
                   ? "hd"
                   : paramKeys.maxResolution === "sd" ||
                     paramKeys.maxResolution === "hd"
-                    ? paramKeys.maxResolution
-                    : "sd",
+                  ? paramKeys.maxResolution
+                  : "sd",
               participantId: paramKeys.participantId,
               preferredProtocol: paramKeys.preferredProtocol,
               autoConsume: false,
               mode: paramKeys.mode,
               multiStream: paramKeys.multiStream === "true",
+              signalingBaseUrl: paramKeys.signalingBaseUrl,
             }}
             token={paramKeys.token}
             joinWithoutUserInteraction
