@@ -16,21 +16,22 @@ const PollListner = ({ pollId }) => {
       senderName: participantName,
       timestamp,
     }) => {
+      const { optionId } = JSON.parse(message);
       setCreatedPolls((s) =>
         s.map((_poll) =>
           pollId === _poll.id
             ? {
-                ..._poll,
-                submissions: [
-                  ..._poll.submissions,
-                  {
-                    optionId: message.optionId,
-                    participantId,
-                    participantName,
-                    timestamp,
-                  },
-                ],
-              }
+              ..._poll,
+              submissions: [
+                ..._poll.submissions,
+                {
+                  optionId: optionId,
+                  participantId,
+                  participantName,
+                  timestamp,
+                },
+              ],
+            }
             : _poll
         )
       );
@@ -53,7 +54,7 @@ const PollListner = ({ pollId }) => {
             message,
             senderName: participantName,
           }) => {
-            const { optionId } = message;
+            const { optionId } = JSON.parse(message);
 
             return {
               participantName,

@@ -71,19 +71,22 @@ const ModeListner = () => {
 
   usePubSub(`CHANGE_MODE_${mMeeting?.localParticipant?.id}`, {
     onMessageReceived: async (data) => {
-      if (data.message.mode === meetingModes.SEND_AND_RECV) {
+
+      const { mode } = JSON.parse(data.message);
+      if (mode === meetingModes.SEND_AND_RECV) {
         setReqModeInfo({
           enabled: true,
           senderId: data.senderId,
-          mode: data.message.mode,
+          mode: mode,
           accept: () => { },
           reject: () => { },
         });
       } else {
-        mMeeting.changeMode(data.message.mode);
+        mMeeting.changeMode(mode);
         try {
-          await publishRef.current(data.message.mode, { persist: true });
+          await publishRef.current(mode, { persist: true });
         } catch (e) {
+          console.log('error: ', e);
         }
 
         const muteMic = mMeetingRef.current?.muteMic;

@@ -6,8 +6,8 @@ const MediaRequested = () => {
   const reqInfoDefaultState = {
     enabled: false,
     participantName: null,
-    accept: () => {},
-    reject: () => {},
+    accept: () => { },
+    reject: () => { },
   };
 
   const [reqMicInfo, setReqMicInfo] = useState(reqInfoDefaultState);
@@ -46,14 +46,15 @@ const MediaRequested = () => {
 
   usePubSub(`SCR_SHR_REQ_${mMeeting?.localParticipant?.id}`, {
     onMessageReceived: (data) => {
-      if (data.message.setScreenShareOn) {
+      const { setScreenShareOn } = JSON.parse(data.message);
+      if (setScreenShareOn) {
         setReqScreenShareInfo({
           enabled: true,
           participantName: "Host",
           accept: () => {
             mMeeting?.toggleScreenShare();
           },
-          reject: () => {},
+          reject: () => { },
         });
       } else {
         mMeeting?.toggleScreenShare();

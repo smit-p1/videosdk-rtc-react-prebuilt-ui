@@ -319,19 +319,25 @@ function WhiteboardContainer({
 
   usePubSub(`WB`, {
     onMessageReceived: ({ message }) => {
-      const { event, data } = message;
-      onChatMessage({ event: event, data: data });
+      try {
+        const { event, data } = JSON.parse(message);
+        onChatMessage({ event: event, data: data });
+      } catch (e) { }
     },
     onOldMessagesReceived: async (messages) => {
-      for (let msg of messages) {
-        const { message } = msg;
-        if (message.event === "CLEAR") {
-          fabricRef.current.clear();
-          return;
-        } else {
-          setIsLoadingCanvasData(true);
-          await onChatMessage({ event: message.event, data: message.data });
-          setIsLoadingCanvasData(false);
+      for (let i = 0; i < messages.length; i++) {
+        const msg = messages[i];
+        try {
+          const { event, data } = JSON.parse(msg.message);
+          if (event === "CLEAR") {
+            fabricRef.current.clear();
+            return;
+          } else {
+            setIsLoadingCanvasData(true);
+            await onChatMessage({ event: event, data: data });
+            setIsLoadingCanvasData(false);
+          }
+        } catch (e) {
         }
       }
     },
@@ -458,10 +464,10 @@ function WhiteboardContainer({
 
   async function sendData({ event, data }) {
     try {
-      await publish({ event, data }, { persist: true });
-
+      const payload = JSON.stringify({ event, data });
+      await publish(payload, { persist: true });
     } catch (error) {
-
+      console.log('error: ', error);
     }
   }
 

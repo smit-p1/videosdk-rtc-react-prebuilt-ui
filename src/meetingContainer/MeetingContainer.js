@@ -286,10 +286,12 @@ const MeetingContainer = () => {
 
   const { publish: liveStreamConfigPublish } = usePubSub("LIVE_STREAM_CONFIG", {
     onMessageReceived: (data) => {
-      setLiveStreamConfig(data.message.config);
+      const { config } = JSON.parse(data.message);
+      setLiveStreamConfig(config);
     },
 
     onOldMessagesReceived: (messages) => {
+
       const latestMessage = messages.sort((a, b) => {
         if (a.timestamp > b.timestamp) {
           return -1;
@@ -301,7 +303,8 @@ const MeetingContainer = () => {
       })[0];
 
       if (latestMessage) {
-        setLiveStreamConfig(latestMessage.message.config);
+        const { config } = JSON.parse(latestMessage.message);
+        setLiveStreamConfig(config);
       }
     },
   });

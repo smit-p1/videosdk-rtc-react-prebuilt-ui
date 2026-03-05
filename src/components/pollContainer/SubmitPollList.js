@@ -373,14 +373,14 @@ const SubmitPollListItem = ({ poll }) => {
                     }}
                   >
                     <MarkCorrectCheckbox
-                      onClick={async() => {
+                      onClick={async () => {
                         try {
                           await publish(
-                            { optionId: option.optionId },
+                            JSON.stringify({ optionId: option.optionId }),
                             { persist: true }
                           );
                         } catch (error) {
-
+                          console.log('error: ', error)
                         }
 
                       }}

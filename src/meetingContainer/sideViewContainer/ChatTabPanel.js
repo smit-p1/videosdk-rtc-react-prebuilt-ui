@@ -308,6 +308,7 @@ const ChatMessageInput = ({ inputHeight }) => {
                 try {
                   await publish(message, { persist: true });
                 } catch (error) {
+                  console.log('error: ', error);
                 }
                 setTimeout(() => {
                   setMessageText("");
@@ -343,12 +344,13 @@ const ChatMessageInput = ({ inputHeight }) => {
                 <Box>
                   <IconButton
                     disabled={!messageText.trim().length}
-                    onClick={async() => {
+                    onClick={async () => {
                       const message = messageText.trim();
                       if (message.length > 0) {
                         try {
                           await publish(message, { persist: true });
                         } catch (error) {
+                          console.log('error: ', error);
                         }
                         setTimeout(() => {
                           setMessageText("");

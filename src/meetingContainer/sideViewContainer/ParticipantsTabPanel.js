@@ -483,11 +483,11 @@ function ParticipantListItem({ raisedHand, participantId }) {
                       onClick={async (e) => {
                         e.stopPropagation();
                         try {
-                          await publish({
+                          await publish(JSON.stringify({
                             setScreenShareOn: !isParticipantPresenting,
-                          });
+                          }));
                         } catch (error) {
-
+                          console.log('error: ', error);
                         }
 
                         handleClose();
