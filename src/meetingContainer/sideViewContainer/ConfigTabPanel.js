@@ -155,9 +155,7 @@ function ConfigTabPanel({ panelHeight }) {
   //handlers
 
   const _handleChangeResolution = (event) => {
-    console.log("event",event);
     const resolution = event.currentTarget.value.toUpperCase();
-    console.log("resolutioin",resolution);
     // publishToPubSub({ resolution });
     setMeetingResolution(resolution);
     enqueueSnackbar(
