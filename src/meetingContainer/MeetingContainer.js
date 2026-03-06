@@ -394,11 +394,10 @@ const MeetingContainer = () => {
 
     if (joinScreenMic && selectedMic.id) {
       await new Promise((resolve) => {
-        muteMic();
+        // muteMic();
         setTimeout(async () => {
           const audioTrack = await getCustomAudioTrack(selectedMic.id);
           changeMic(audioTrack);
-          // changeMic(selectedMic.id);
           resolve();
         }, 500);
       });

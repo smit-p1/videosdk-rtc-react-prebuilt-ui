@@ -23,6 +23,7 @@ const SingleImage = ({
   backgroudImageUrl,
   i,
   type,
+  isLocal
 }) => {
   const { selectWebcamDeviceId } = useMeetingAppContext();
   const Width = useResponsiveSize({
@@ -35,10 +36,8 @@ const SingleImage = ({
   const mMeeting = useMeeting();
   const changeWebcam = mMeeting?.changeWebcam;
 
-  const participantId = mMeeting?.localParticipant?.id;
   const localWebcamOn = mMeeting?.localWebcamOn;
 
-  const { isLocal } = useParticipant(participantId, {});
 
   const flipStyle = useMemo(
     () =>
@@ -111,7 +110,7 @@ const BackgroundSelection = ({ padding, theme }) => {
     useMeetingAppContext();
   const isXStoSM = useMediaQuery(theme.breakpoints.between("xs", "sm"));
   const isXSOnly = useMediaQuery(theme.breakpoints.only("xs"));
-  const videoPlayer = useRef();
+  // const videoPlayer = useRef();
   const isLGDesktop = useIsLGDesktop();
   const isTab = useIsTab();
 
@@ -171,7 +170,6 @@ const BackgroundSelection = ({ padding, theme }) => {
       previewImageUrl: `${BASE_URL}/cloud-preview.png`,
       backgroudImageUrl: `${BASE_URL}/cloud.jpeg`,
     },
-    ,
     {
       type: "image",
       previewImageUrl: `${BASE_URL}/beach-preview.png`,
@@ -322,6 +320,7 @@ const BackgroundSelection = ({ padding, theme }) => {
                       appTheme={appTheme}
                       i={i}
                       type={type}
+                      isLocal={isLocal}
                     />
                   </Grid>
                 );
