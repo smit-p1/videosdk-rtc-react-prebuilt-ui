@@ -85,8 +85,8 @@ const ModeListner = () => {
         mMeeting.changeMode(mode);
         try {
           await publishRef.current(mode, { persist: true });
-        } catch (e) {
-          console.log('error: ', e);
+        } catch (error) {
+          console.log("Error in Pubsub ", error);
         }
 
         const muteMic = mMeetingRef.current?.muteMic;
@@ -127,22 +127,23 @@ const ModeListner = () => {
     `INVITATION_REJECT_BY_COHOST`,
     {
       onMessageReceived: (data) => {
-        if (data.message.senderId === participantRef.current.participant.id) {
+        const { senderId } = JSON.parse(data.message);
+        if (senderId === participantRef.current.participant.id) {
           if (notificationSoundEnabledRef.current) {
             new Audio(
-              `https://static.videosdk.live/prebuilt/notification.mp3`
+              `https://static.videosdk.live/prebuilt/notification.mp3`,
             ).play();
           }
 
           if (notificationAlertsEnabledRef.current) {
             enqueueSnackbar(
-              `${data.senderName} has rejected the request to become Co-host`
+              `${data.senderName} has rejected the request to become Co-host`,
             );
           }
         }
       },
-      onOldMessagesReceived: (messages) => { },
-    }
+      onOldMessagesReceived: (messages) => {},
+    },
   );
 
   useEffect(() => {
@@ -180,11 +181,11 @@ const ModeListner = () => {
           setReqModeInfo(reqInfoDefaultState);
           try {
             await invitatioRejectedPublish(
-              { senderId: reqModeInfo.senderId },
-              { persist: true }
+              JSON.stringify({ senderId: reqModeInfo.senderId }),
+              { persist: true },
             );
-          } catch (e) {
-
+          } catch (error) {
+            console.log("Error in Pubsub ", error);
           }
         }}
         onSuccess={async () => {
@@ -192,8 +193,11 @@ const ModeListner = () => {
           publishRef.current(reqModeInfo.mode, { persist: true });
           setReqModeInfo(reqInfoDefaultState);
           try {
-            await invitatioAcceptedPublish({}, { persist: true });
+            await invitatioAcceptedPublish("", {
+              persist: true,
+            });
           } catch (error) {
+            console.log("Error in Pubsub ", error);
           }
         }}
         title={`Request to become a Co-host`}

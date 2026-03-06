@@ -155,7 +155,9 @@ function ConfigTabPanel({ panelHeight }) {
   //handlers
 
   const _handleChangeResolution = (event) => {
+    console.log("event",event);
     const resolution = event.currentTarget.value.toUpperCase();
+    console.log("resolutioin",resolution);
     // publishToPubSub({ resolution });
     setMeetingResolution(resolution);
     enqueueSnackbar(
@@ -192,27 +194,41 @@ function ConfigTabPanel({ panelHeight }) {
 
     const layout = { type, gridSize, priority };
     try {
-      await livestreamPublishRef.current({ layout }, { persist: true });
+      await livestreamPublishRef.current(JSON.stringify({ layout }), {
+        persist: true,
+      });
     } catch (error) {
+      console.log("Error in Pubsub ", error);
     }
     try {
-      await hlsPublishRef.current({ layout }, { persist: true });
+      await hlsPublishRef.current(JSON.stringify({ layout }), {
+        persist: true,
+      });
     } catch (error) {
+      console.log("Error in Pubsub ", error);
     }
     try {
-      await meetingPublishRef.current({ layout }, { persist: true });
+      await meetingPublishRef.current(JSON.stringify({ layout }), {
+        persist: true,
+      });
     } catch (error) {
+      console.log("Error in Pubsub ", error);
     }
     try {
-      await recordingPublishRef.current({ layout }, { persist: true });
+      await recordingPublishRef.current(JSON.stringify({ layout }), {
+        persist: true,
+      });
     } catch (error) {
+      console.log("Error in Pubsub ", error);
     }
     try {
-      await resolutionPublishRef.current({ resolution }, { persist: true });
+      await resolutionPublishRef.current(JSON.stringify({ resolution }), {
+        persist: true,
+      });
     } catch (error) {
+      console.log("Error in Pubsub ", error);
     }
-  },
-    500);
+  }, 500);
 
   //layout and priority card
   let Card = ({ isActive, ref, title, Icon, onClick }) => {

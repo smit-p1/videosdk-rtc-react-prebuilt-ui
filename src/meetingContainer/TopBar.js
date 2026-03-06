@@ -254,7 +254,7 @@ const RaiseHandBTN = ({ onClick, isMobile, isTab }) => {
     try {
       await publish("Raise Hand");
     } catch (error) {
-      console.log('error: ', error);
+      console.log("Error in Pubsub ", error);
     }
   };
 

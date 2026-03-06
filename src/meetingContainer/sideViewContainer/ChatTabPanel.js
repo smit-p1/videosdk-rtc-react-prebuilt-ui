@@ -308,7 +308,7 @@ const ChatMessageInput = ({ inputHeight }) => {
                 try {
                   await publish(message, { persist: true });
                 } catch (error) {
-                  console.log('error: ', error);
+                  console.log("Error in Pubsub ", error);
                 }
                 setTimeout(() => {
                   setMessageText("");
@@ -350,7 +350,7 @@ const ChatMessageInput = ({ inputHeight }) => {
                         try {
                           await publish(message, { persist: true });
                         } catch (error) {
-                          console.log('error: ', error);
+                          console.log("Error in Pubsub ", error);
                         }
                         setTimeout(() => {
                           setMessageText("");

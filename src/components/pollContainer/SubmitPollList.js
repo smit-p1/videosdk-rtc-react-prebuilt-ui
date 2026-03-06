@@ -379,8 +379,8 @@ const SubmitPollListItem = ({ poll }) => {
                             JSON.stringify({ optionId: option.optionId }),
                             { persist: true }
                           );
-                        } catch (error) {
-                          console.log('error: ', error)
+                        } catch (error) {               
+                          console.log("Error in Pubsub ", error);
                         }
 
                       }}

@@ -106,13 +106,13 @@ const PollsListner = () => {
       // ]);
 
       setCreatedPolls((s) => [
-        { ...message, createdAt: timestamp, submissions: [] },
+        { ...JSON.parse(message), createdAt: timestamp, submissions: [] },
         ...s,
       ]);
 
       if (notificationSoundEnabled) {
         new Audio(
-          `https://static.videosdk.live/prebuilt/notification.mp3`
+          `https://static.videosdk.live/prebuilt/notification.mp3`,
         ).play();
       }
 
@@ -142,10 +142,10 @@ const PollsListner = () => {
         ...s,
         ...messages
           .sort((a, b) =>
-            a.timestamp > b.timestamp ? -1 : a.timestamp < b.timestamp ? 1 : 0
+            a.timestamp > b.timestamp ? -1 : a.timestamp < b.timestamp ? 1 : 0,
           )
           .map(({ message, timestamp }) => ({
-            ...message,
+            ...JSON.parse(message),
             createdAt: timestamp,
             submissions: [],
           })),
@@ -155,8 +155,8 @@ const PollsListner = () => {
 
   usePubSub(`END_POLL`, {
     onMessageReceived: ({ message }) => {
-      setEndedPolls((s) => [...s, { pollId: message.pollId }]);
-
+      const { pollId } = JSON.parse(message);
+      setEndedPolls((s) => [...s, { pollId }]);
       // console.log("END_POLL message onMessageReceived", message);
       // setPolls((s) => {
       //   return s.map((_poll) => {
@@ -172,7 +172,10 @@ const PollsListner = () => {
     onOldMessagesReceived: (messages) => {
       setEndedPolls((s) => [
         ...s,
-        ...messages.map(({ message }) => ({ pollId: message.pollId })),
+        ...messages.map(({ message }) => {
+          const { pollId } = JSON.parse(message);
+          return { pollId };
+        }),
       ]);
 
       // console.log("message onOldMessagesReceived", messages);
@@ -195,7 +198,7 @@ const PollsListner = () => {
 
   usePubSub(`DRAFT_A_POLL`, {
     onMessageReceived: ({ message }) => {
-      setDraftPolls((s) => [...s, message]);
+      setDraftPolls((s) => [...s, JSON.parse(message)]);
     },
     onOldMessagesReceived: (messages) => {
       const sortedMessage = messages.sort((a, b) => {
@@ -208,7 +211,7 @@ const PollsListner = () => {
         return 0;
       });
       const newPolls = sortedMessage.map(({ message }) => {
-        return { ...message };
+        return { ...JSON.parse(message) };
       });
       setDraftPolls(newPolls);
     },
@@ -216,9 +219,10 @@ const PollsListner = () => {
 
   usePubSub(`REMOVE_POLL_FROM_DRAFT`, {
     onMessageReceived: ({ message }) => {
+      const { pollId } = JSON.parse(message);
       setDraftPolls((s) => {
         return s.filter((_poll) => {
-          if (message.pollId === _poll.id) {
+          if (pollId === _poll.id) {
             return false;
           } else {
             return true;
@@ -231,9 +235,10 @@ const PollsListner = () => {
         s.filter(
           (_poll) =>
             messages.findIndex(({ message }) => {
-              return message.pollId === _poll.id;
-            }) === -1
-        )
+              const { pollId } = JSON.parse(message);
+              return pollId === _poll.id;
+            }) === -1,
+        ),
       );
     },
   });

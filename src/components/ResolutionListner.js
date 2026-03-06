@@ -8,10 +8,11 @@ const ResolutionListner = () => {
 
   usePubSub(`CHANGE_RESOLUTION`, {
     onMessageReceived: (data) => {
-      if (data.message.resolution) {
-        setMeetingResolution(data.message.resolution);
+      const { resolution } = JSON.parse(data.message);
+      if (resolution) {
+        setMeetingResolution(resolution);
         enqueueSnackbar(
-          `Video resolution of all participants changed to ${data.message.resolution}.`
+          `Video resolution of all participants changed to ${resolution}.`,
         );
       }
     },
@@ -27,9 +28,10 @@ const ResolutionListner = () => {
       })[0];
 
       if (latestMessage) {
-        setMeetingResolution(latestMessage.message.resolution);
+        const { resolution } = JSON.parse(latestMessage.message);
+        setMeetingResolution(resolution);
         enqueueSnackbar(
-          `Video resolution of all participants changed to ${latestMessage.message.resolution}.`
+          `Video resolution of all participants changed to ${resolution}.`,
         );
       }
     },
