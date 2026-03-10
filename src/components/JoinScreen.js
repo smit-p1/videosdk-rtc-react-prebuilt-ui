@@ -252,7 +252,7 @@ export default function JoinMeeting({
         return { ...devices, webcams };
       });
     } catch (err) {
-      console.log("Error in getting camera devices", err);
+      console.log("Error in getting camera", err);
     }
   };
 
