@@ -825,7 +825,7 @@ const PollButtonPart = ({
           if (isValid) {
             try {
               await publishDraftPoll(
-                {
+                JSON.stringify({
                   id: uuid(),
                   question: question.trim(),
                   options: options.map((option) => ({
@@ -836,13 +836,13 @@ const PollButtonPart = ({
                   hasCorrectAnswer: isMarkAsCorrectChecked ? true : false,
                   hasTimer: isSetTimerChecked ? true : false,
                   isActive: false,
-                },
+                }),
                 {
                   persist: true,
-                }
+                },
               );
             } catch (error) {
-
+              console.log("Error in Pubsub ", error);
             }
 
             setSideBarNestedMode(sideBarNestedModes.POLLS);
@@ -876,7 +876,7 @@ const PollButtonPart = ({
           if (isValid) {
             try {
               await publishCreatePoll(
-                {
+                JSON.stringify({
                   id: uuid(),
                   question: question.trim(),
                   options: options.map((option) => ({
@@ -888,11 +888,11 @@ const PollButtonPart = ({
                   hasTimer: isSetTimerChecked ? true : false,
                   isActive: true,
                   index: polls.length + 1,
-                },
-                { persist: true }
+                }),
+                { persist: true },
               );
             } catch (error) {
-
+              console.log("Error in Pubsub ", error);
             }
 
             setSideBarNestedMode(sideBarNestedModes.POLLS);

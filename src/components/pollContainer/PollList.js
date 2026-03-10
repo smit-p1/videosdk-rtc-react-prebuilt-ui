@@ -470,15 +470,14 @@ const Poll = ({ poll, isDraft, publishDraftPoll }) => {
                 onClick={async () => {
                   try {
                     await EndPublish(
-                      {
+                      JSON.stringify({
                         pollId: poll.id,
-                      },
-                      { persist: true }
+                      }),
+                      { persist: true },
                     );
                   } catch (error) {
-
+                    console.log("Error in Pubsub ", error);
                   }
-
                 }}
               >
                 End the Poll
@@ -602,17 +601,17 @@ const PollList = ({ panelHeight }) => {
                   //
                   try {
                     await RemoveFromDraftPublish(
-                      { pollId: poll.id },
-                      { persist: true }
+                      JSON.stringify({ pollId: poll.id }),
+                      { persist: true },
                     );
                   } catch (error) {
-
+                    console.log("Error in Pubsub ", error);
                   }
 
                   //
                   try {
                     await publishCreatePoll(
-                      {
+                      JSON.stringify({
                         id: uuid(),
                         question: poll.question,
                         options: poll.options,
@@ -622,11 +621,11 @@ const PollList = ({ panelHeight }) => {
                         hasCorrectAnswer: poll.hasCorrectAnswer,
                         isActive: true,
                         index: polls.length + 1,
-                      },
-                      { persist: true }
+                      }),
+                      { persist: true },
                     );
-                  }catch(e){
-                    
+                  } catch (error) {
+                    console.log("Error in Pubsub ", error);
                   }
 
                   //

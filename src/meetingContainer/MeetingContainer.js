@@ -241,18 +241,18 @@ const MeetingContainer = () => {
 
   usePubSub(meetingLayoutTopic, {
     onMessageReceived: (data) => {
+      const { layout } = JSON.parse(data.message);
       setAppMeetingLayout({
-        ...data.message.layout,
+        ...layout,
         gridSize: isRecorder
           ? mMeetingRef.current?.presenterId
-            ? data.message.layout.gridSize >
-              RECORDER_MAX_GRID_SIZE_WITH_SCREENSCHARE_ENABLED
+            ? layout.gridSize > RECORDER_MAX_GRID_SIZE_WITH_SCREENSCHARE_ENABLED
               ? RECORDER_MAX_GRID_SIZE_WITH_SCREENSCHARE_ENABLED
-              : data.message.layout.gridSize
-            : data.message.layout.gridSize > RECORDER_MAX_GRID_SIZE
+              : layout.gridSize
+            : layout.gridSize > RECORDER_MAX_GRID_SIZE
               ? RECORDER_MAX_GRID_SIZE
-              : data.message.layout.gridSize
-          : data.message.layout.gridSize,
+              : layout.gridSize
+          : layout.gridSize,
       });
     },
     onOldMessagesReceived: (messages) => {
@@ -267,18 +267,19 @@ const MeetingContainer = () => {
       })[0];
 
       if (latestMessage) {
+        const { layout } = JSON.parse(latestMessage.message);
         setAppMeetingLayout({
-          ...latestMessage.message.layout,
+          ...layout,
           gridSize: isRecorder
             ? mMeetingRef.current?.presenterId
-              ? latestMessage.message.layout.gridSize >
+              ? layout.gridSize >
                 RECORDER_MAX_GRID_SIZE_WITH_SCREENSCHARE_ENABLED
                 ? RECORDER_MAX_GRID_SIZE_WITH_SCREENSCHARE_ENABLED
-                : latestMessage.message.layout.gridSize
-              : latestMessage.message.layout.gridSize > RECORDER_MAX_GRID_SIZE
+                : layout.gridSize
+              : layout.gridSize > RECORDER_MAX_GRID_SIZE
                 ? RECORDER_MAX_GRID_SIZE
-                : latestMessage.message.layout.gridSize
-            : latestMessage.message.layout.gridSize,
+                : layout.gridSize
+            : layout.gridSize,
         });
       }
     },
@@ -286,7 +287,8 @@ const MeetingContainer = () => {
 
   const { publish: liveStreamConfigPublish } = usePubSub("LIVE_STREAM_CONFIG", {
     onMessageReceived: (data) => {
-      setLiveStreamConfig(data.message.config);
+      const { config } = JSON.parse(data.message);
+      setLiveStreamConfig(config);
     },
 
     onOldMessagesReceived: (messages) => {
@@ -301,7 +303,8 @@ const MeetingContainer = () => {
       })[0];
 
       if (latestMessage) {
-        setLiveStreamConfig(latestMessage.message.config);
+        const { config } = JSON.parse(latestMessage.message);
+        setLiveStreamConfig(config);
       }
     },
   });
@@ -342,17 +345,16 @@ const MeetingContainer = () => {
         startLivestream(outputs, { layout, theme: liveStreamTheme });
         try {
           await liveStreamConfigPublishRef.current(
-            {
+            JSON.stringify({
               config: outputs.map((output) => {
                 return { ...output, id: getUniqueId() };
               }),
-            },
-            { persist: true }
+            }),
+            { persist: true },
           );
         } catch (error) {
-
+          console.log("Error in Pubsub ", error);
         }
-
       }
 
       //
@@ -392,11 +394,10 @@ const MeetingContainer = () => {
 
     if (joinScreenMic && selectedMic.id) {
       await new Promise((resolve) => {
-        muteMic();
+        // muteMic();
         setTimeout(async () => {
           const audioTrack = await getCustomAudioTrack(selectedMic.id);
           changeMic(audioTrack);
-          // changeMic(selectedMic.id);
           resolve();
         }, 500);
       });

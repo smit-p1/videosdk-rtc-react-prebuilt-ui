@@ -614,14 +614,6 @@ const ParticipantViewer = ({ participantId, quality, useVisibilitySensor }) => {
 
   const isPortrait = useMediaQuery({ query: "(orientation: portrait)" });
 
-  const onStreamEnabled = (stream) => {
-    // console.log(participantId, stream.kind, " Stream started ");
-  };
-
-  const onStreamDisabled = (stream) => {
-    // console.log(participantId, stream.kind, " Stream stopped ");
-  };
-
   const {
     displayName,
     setQuality,
@@ -634,10 +626,7 @@ const ParticipantViewer = ({ participantId, quality, useVisibilitySensor }) => {
     pinState,
     pin,
     unpin,
-  } = useParticipant(participantId, {
-    onStreamDisabled,
-    onStreamEnabled,
-  });
+  } = useParticipant(participantId);
 
   const participantAccentColor = useMemo(
     () => getRandomColor(appTheme === appThemes.LIGHT ? "dark" : "light"),

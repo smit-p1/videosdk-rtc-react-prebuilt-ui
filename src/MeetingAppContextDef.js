@@ -248,7 +248,8 @@ export const MeetingAppProvider = ({
       : meetingLayouts.GRID;
   }, [appMeetingLayout, meetingLayouts]);
 
-  const videoProcessor = new VirtualBackgroundProcessor();
+
+  const videoProcessor = useMemo(() => new VirtualBackgroundProcessor(), []);
 
   return (
     <MeetingAppContext.Provider
