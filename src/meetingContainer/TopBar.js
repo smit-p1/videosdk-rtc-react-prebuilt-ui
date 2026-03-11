@@ -2003,7 +2003,8 @@ const MicBTN = () => {
   const getSpeakers = async () => {
     const devices = await getPlaybackDevices();
     const outputMics = devices.filter(
-      (d) => d.deviceId !== "default" && d.deviceId !== "communications"
+      (d) => d.deviceId !== ""
+      // (d) => d.deviceId !== "default" && d.deviceId !== "communications"
     );
 
     outputMics && outputMics?.length && setOutputMics(outputMics);
