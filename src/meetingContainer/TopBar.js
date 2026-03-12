@@ -1781,6 +1781,7 @@ const WebcamBTN = () => {
     isMirrorViewChecked,
     setIsMirrorViewChecked,
     cameraId,
+    webcamEnabled,
   } = useMeetingAppContext();
   const { enqueueSnackbar } = useSnackbar();
   const { getCustomVideoTrack } = useCustomTrack();
@@ -1798,7 +1799,6 @@ const WebcamBTN = () => {
     mMeeting?.toggleWebcam(track);
   };
   const changeWebcam = async (deviceId) => {
-    console.log("deviceId", deviceId);
     const track = await getCustomVideoTrack(deviceId);
     mMeeting?.changeWebcam(track ? track : deviceId);
   };
@@ -1860,6 +1860,10 @@ const WebcamBTN = () => {
     >
       <OutlineIconButton
         btnID={"btnWebcam"}
+        disabled={
+          webcamEnabled == false ||
+          webcamEnabled == "false"
+        }
         tooltipTitle={localWebcamOn ? "Turn off webcam" : "Turn on webcam"}
         isFocused={localWebcamOn}
         Icon={localWebcamOn ? WebCamOnIcon : WebCamOffIcon}
@@ -1876,6 +1880,8 @@ const WebcamBTN = () => {
           return (
             <Tooltip placement="bottom" title={"Change webcam"}>
               <CustomIconButton
+                disabled={webcamEnabled == false ||
+                  webcamEnabled == "false"}
                 onClick={(e) => {
                   getWebcams(mMeeting?.getWebcams);
                   handleClick(e);
@@ -1987,8 +1993,8 @@ const MicBTN = () => {
     setSelectMicDeviceId,
     selectedOutputDeviceId,
     setSelectedOutputDeviceId,
+    micEnabled,
   } = useMeetingAppContext();
-
   const [isNoiseRemovalChecked, setIsNoiseRemovalChecked] = useState(false);
   const [downArrow, setDownArrow] = useState(null);
   const [mics, setMics] = useState([]);
@@ -2003,7 +2009,8 @@ const MicBTN = () => {
   const getSpeakers = async () => {
     const devices = await getPlaybackDevices();
     const outputMics = devices.filter(
-      (d) => d.deviceId !== "default" && d.deviceId !== "communications"
+      (d) => d.deviceId !== ""
+      // (d) => d.deviceId !== "default" && d.deviceId !== "communications"
     );
 
     outputMics && outputMics?.length && setOutputMics(outputMics);
@@ -2087,6 +2094,8 @@ const MicBTN = () => {
     >
       <OutlineIconButton
         btnID={"btnMic"}
+        disabled={micEnabled == false ||
+          micEnabled == "false"}
         tooltipTitle={
           isNoiseRemovalChecked
             ? "Noise Removal Activated"
@@ -2108,6 +2117,8 @@ const MicBTN = () => {
           return (
             <Tooltip placement="bottom" title={"Change microphone"}>
               <CustomIconButton
+                disabled={micEnabled == false ||
+                  micEnabled == "false"}
                 p={0}
                 onClick={(e) => {
                   getMics(mMeeting.getMics);

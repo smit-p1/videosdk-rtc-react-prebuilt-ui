@@ -32,6 +32,8 @@ import { initReactI18next } from "react-i18next";
 
 const App = () => {
   const prebuiltSDKVersion = packageInfo.version;
+  const [customAudioStream, setCustomAudioStream] = useState(null);
+  const [customVideoStream, setCustomVideoStream] = useState(null);
   const [meetingIdValidation, setMeetingIdValidation] = useState({
     isLoading: true,
     meetingId: null,
@@ -535,6 +537,7 @@ const App = () => {
   );
   const [selectedMic, setSelectedMic] = useState({ id: null });
   const [selectedWebcam, setSelectedWebcam] = useState({ id: null });
+  const [selectedSpeaker, setSelectedSpeaker] = useState({ id: null });
 
   const validateMeetingId = async ({ meetingId, token, debug, region }) => {
     const BASE_URL = "https://api.videosdk.live";
@@ -684,6 +687,12 @@ const App = () => {
           {...{
             redirectOnLeave: paramKeys.redirectOnLeave,
             chatEnabled: paramKeys.chatEnabled === "true",
+            micEnabled: paramKeys.mode === meetingModes.SIGNALLING_ONLY
+              ? false
+              : paramKeys.micEnabled === "true",
+            webcamEnabled: paramKeys.mode === meetingModes.SIGNALLING_ONLY
+              ? false
+              : paramKeys.webcamEnabled === "true",
             screenShareEnabled: paramKeys.screenShareEnabled === "true",
             pollEnabled: paramKeys.pollEnabled === "true",
             whiteboardEnabled: paramKeys.whiteboardEnabled === "true",
@@ -755,6 +764,7 @@ const App = () => {
             canPin: paramKeys.canPin === "true",
             selectedMic,
             selectedWebcam,
+            selectedSpeaker,
             joinScreenWebCam,
             joinScreenMic,
             canRemoveOtherParticipant:
@@ -829,6 +839,8 @@ const App = () => {
               autoConsume: false,
               mode: paramKeys.mode,
               multiStream: paramKeys.multiStream === "true",
+              customCameraVideoTrack: customVideoStream,
+              customMicrophoneAudioTrack: customAudioStream
             }}
             token={paramKeys.token}
             joinWithoutUserInteraction
@@ -864,8 +876,15 @@ const App = () => {
           }}
           name={name}
           setName={setName}
+          selectedMic={selectedMic}
+          selectedWebcam={selectedWebcam}
+          selectedSpeaker={selectedSpeaker}
+          customAudioStream={customAudioStream}
+          setCustomAudioStream={setCustomAudioStream}
+          setCustomVideoStream={setCustomVideoStream}
           setSelectedMic={setSelectedMic}
           setSelectedWebcam={setSelectedWebcam}
+          setSelectedSpeaker={setSelectedSpeaker}
           meetingUrl={paramKeys.joinScreenMeetingUrl}
           meetingTitle={paramKeys.joinScreenTitle}
           participantCanToggleSelfWebcam={

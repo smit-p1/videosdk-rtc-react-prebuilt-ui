@@ -380,27 +380,35 @@ const MeetingContainer = () => {
         ? webcamEnabledValue
         : joinScreenWebCam && (cameraId || selectedWebcam.id)
     ) {
-      await new Promise((resolve) => {
-        disableWebcam();
-        setTimeout(async () => {
-          const track = await getCustomVideoTrack(
-            cameraId ? cameraId : selectedWebcam.id
-          );
-          changeWebcam(track);
-          resolve();
-        }, 500);
-      });
+      // await new Promise((resolve) => {
+      //   // disableWebcam();
+      //   setTimeout(async () => {
+      //     console.log('cameraId', cameraId);
+      //     console.log('selectedWebcam.id', selectedWebcam.id);
+
+      //     const track = await getCustomVideoTrack(
+      //       cameraId ? cameraId : selectedWebcam.id
+      //     );
+      //     console.log('track meeting container: ', track);
+
+      //     changeWebcam(track);
+      //     resolve();
+      //   }, 500);
+      // });
     }
 
     if (joinScreenMic && selectedMic.id) {
-      await new Promise((resolve) => {
-        // muteMic();
-        setTimeout(async () => {
-          const audioTrack = await getCustomAudioTrack(selectedMic.id);
-          changeMic(audioTrack);
-          resolve();
-        }, 500);
-      });
+      // await new Promise((resolve) => {
+      //   // muteMic();
+      //   setTimeout(async () => {
+      //     console.log('selectedMic.id', selectedMic.id);
+      //     const audioTrack = await getCustomAudioTrack(selectedMic.id);
+      //     console.log('audioTrack meeting container: ', audioTrack);
+      //     changeMic(audioTrack);
+      //     // changeMic(selectedMic.id);
+      //     resolve();
+      //   }, 500);
+      // });
     }
   };
 
