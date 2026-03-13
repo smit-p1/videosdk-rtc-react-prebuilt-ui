@@ -29,13 +29,20 @@ const StyledPopoverButton = styled(Button)(({ theme, isOpen, isHovered, disabled
     textTransform: "none",
     color: isOpen ? "#FFF" : "#B4B4B4",
     backgroundColor: isOpen ? "#000" : "transparent",
-    border: isOpen ? "1px solid #E5E5E5" : "none",
-    opacity: disabled ? 0.5 : 1,
+    // border: isOpen ? "1px solid #E5E5E5" : "none",
+    border: "none",
+    outline: isOpen ? "1px solid #6B7280" : "none",
     "&:hover": {
         backgroundColor: disabled ? "transparent" : "#000",
         border: disabled ? "none" : "1px solid #E5E5E5",
-        color: disabled ? "#B4B4B4" : "#FFF",
+        outline: disabled ? "none" : "1px solid #6B7280",
     },
+    // "&:hover": {
+    //     backgroundColor: disabled ? "transparent" : "#000",
+    //     border: disabled ? "none" : "1px solid #E5E5E5",
+    //     color: disabled ? "#B4B4B4" : "#FFF",
+    // },
+    opacity: disabled ? 0.5 : 1,
     "&:focus": {
         outline: "none",
     },
@@ -152,11 +159,13 @@ export default function DropDownSpeaker({
                 onClick={isMicrophonePermissionAllowed === true ? handleClick : undefined}
                 sx={{ pointerEvents: isMicrophonePermissionAllowed === true ? "auto" : "none" }}
             >
-                <Box sx={{ display: "flex", alignItems: "center", width: "100%" }}>
-                    <DropSpeaker fillColor={isHovered || open ? "#FFF" : "#B4B4B4"} />
+                <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", width: "100%" }}>
+                    <DropSpeaker style={{
+                        marginBottom: "2.5px",
+                    }} fillColor={isHovered || open ? "#FFF" : "#B4B4B4"} />
                     <Typography
                         sx={{
-                            ml: 3,
+                            ml: 2,
                             overflow: "hidden",
                             textOverflow: "ellipsis",
                             whiteSpace: "nowrap",
@@ -169,10 +178,10 @@ export default function DropDownSpeaker({
                     </Typography>
                     <ChevronDownIcon
                         style={{
-                            marginLeft: "32px",
+                            marginLeft: "10px",
                             height: "20px",
-                            width: "40px",
-                            marginTop: "4px",
+                            width: "20px",
+                            // marginTop: "2px",
                             color: open ? "#FFF" : "#B4B4B4",
                         }}
                     />
@@ -260,32 +269,35 @@ export default function DropDownSpeaker({
                                         },
                                     }}
                                 >
-                                    <Box sx={{ mr: 1.5 }}>
+                                    <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", mr: 1.5 }}>
                                         <TestSpeaker />
                                     </Box>
-                                    {isPlaying ? (
-                                        <Box
-                                            sx={{
-                                                width: "208px",
-                                                mt: 1,
-                                                backgroundColor: "#6F767E",
-                                                borderRadius: "9999px",
-                                                height: "8px",
-                                            }}
-                                        >
+                                    <Box sx={{ width: "90%", alignItems: "center" }}>
+                                        {isPlaying ? (
                                             <Box
                                                 sx={{
-                                                    backgroundColor: "#FFF",
-                                                    opacity: 0.5,
-                                                    height: "8px",
+                                                    width: "90%",
+                                                    mt: 0,
+                                                    backgroundColor: "#6F767E",
                                                     borderRadius: "9999px",
-                                                    width: `${audioProgress}%`,
+                                                    height: "8px",
+                                                    alignItems: "center",
                                                 }}
-                                            />
-                                        </Box>
-                                    ) : (
-                                        <Typography>Test Speakers</Typography>
-                                    )}
+                                            >
+                                                <Box
+                                                    sx={{
+                                                        backgroundColor: "#FFF",
+                                                        opacity: 0.5,
+                                                        height: "8px",
+                                                        borderRadius: "9999px",
+                                                        width: `${audioProgress}%`,
+                                                    }}
+                                                />
+                                            </Box>
+                                        ) : (
+                                            <Typography>Test Speakers</Typography>
+                                        )}
+                                    </Box>
                                 </Button>
                             </Box>
                         </>

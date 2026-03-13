@@ -28,13 +28,19 @@ const StyledPopoverButton = styled(Button)(({ theme, isOpen, isHovered, disabled
     textTransform: "none",
     color: isOpen ? "#FFF" : "#B4B4B4",
     backgroundColor: isOpen ? "#000" : "transparent",
-    border: isOpen ? "1px solid #E5E5E5" : "none",
+    border: "none",
+    outline: isOpen ? "1px solid #6B7280" : "none",
     opacity: disabled ? 0.5 : 1,
     "&:hover": {
         backgroundColor: disabled ? "transparent" : "#000",
         border: disabled ? "none" : "1px solid #E5E5E5",
-        color: disabled ? "#B4B4B4" : "#FFF",
+        outline: disabled ? "none" : "1px solid #6B7280",
     },
+    // "&:hover": {
+    //     backgroundColor: disabled ? "transparent" : "#000",
+    //     border: disabled ? "none" : "1px solid #E5E5E5",
+    //     color: disabled ? "#B4B4B4" : "#FFF",
+    // },
     "&:focus": {
         outline: "none",
     },
@@ -58,7 +64,7 @@ const StyledListItem = styled(ListItem)(({ theme }) => ({
 }));
 
 const RecordButton = styled(Button)(({ theme }) => ({
-    padding: "8px 16px",
+    padding: "4px 8px",
     fontSize: "12px",
     borderRadius: "4px",
     backgroundColor: "#6F767E",
@@ -69,7 +75,7 @@ const RecordButton = styled(Button)(({ theme }) => ({
     },
 }));
 
-const ProgressButton = styled(Button)(({ theme }) => ({
+const ProgressButton = styled(Button)(({ theme, isMobile, isSmallScreen }) => ({
     padding: "8px 16px",
     fontSize: "12px",
     borderRadius: "4px",
@@ -77,7 +83,8 @@ const ProgressButton = styled(Button)(({ theme }) => ({
     color: "#FFF",
     textTransform: "none",
     position: "relative",
-    minWidth: "90px",
+    width: isMobile || isSmallScreen ? "50%" : "80%",
+    height: "30px",
     overflow: "hidden",
     "&:hover": {
         backgroundColor: "#5A6169",
@@ -92,8 +99,6 @@ export default function DropDown({
     micOn,
     didDeviceChange,
     setDidDeviceChange,
-    testSpeaker,
-    setTestSpeaker,
     selectedMic: selectedMicProp,
     setSelectedMic: setSelectedMicProp,
     selectedSpeaker: selectedSpeakerProp,
@@ -317,11 +322,15 @@ export default function DropDown({
                 onClick={isMicrophonePermissionAllowed === true ? handleClick : undefined}
                 sx={{ pointerEvents: isMicrophonePermissionAllowed === true ? "auto" : "none" }}
             >
-                <Box sx={{ display: "flex", alignItems: "center", width: "100%" }}>
-                    <DropMIC fillColor={isHovered || open ? "#FFF" : "#B4B4B4"} />
+                <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", width: "100%" }}>
+                    <DropMIC
+                        fillColor={isHovered || open ? "#FFF" : "#B4B4B4"}
+                        style={{
+                            marginBottom: "2px",
+                        }} />
                     <Typography
                         sx={{
-                            ml: 3,
+                            ml: 2,
                             overflow: "hidden",
                             textOverflow: "ellipsis",
                             whiteSpace: "nowrap",
@@ -334,10 +343,10 @@ export default function DropDown({
                     </Typography>
                     <ChevronDownIcon
                         style={{
-                            marginLeft: "32px",
+                            marginLeft: "10px",
                             height: "20px",
-                            width: "40px",
-                            marginTop: "4px",
+                            width: "20px",
+                            // marginTop: "4px",
                             color: open ? "#FFF" : "#B4B4B4",
                         }}
                     />
@@ -428,18 +437,20 @@ export default function DropDown({
                                 sx={{
                                     display: "flex",
                                     flexDirection: "row",
+                                    justifyContent: "center",
+                                    alignItems: "center",
                                     width: isMobile || isSmallScreen ? "100%" : "65.666%",
                                 }}
                             >
-                                <Box sx={{ mr: 2, mt: 0.5 }}>
+                                <Box sx={{ mr: 1, mt: 0 }}>
                                     <TestMic />
                                 </Box>
 
                                 <Box
                                     sx={{
                                         width: isMobile || isSmallScreen ? "calc(100% - 40px)" : "144px",
-                                        mt: 1.5,
-                                        mr: isMobile || isSmallScreen ? 2.5 : 0,
+                                        mt: 0,
+                                        mr: isMobile || isSmallScreen ? 2.5 : 1,
                                         backgroundColor: "#6F767E",
                                         borderRadius: "9999px",
                                         height: "4px",
@@ -463,7 +474,7 @@ export default function DropDown({
                                         width: "33.333%",
                                         display: "flex",
                                         justifyContent: "center",
-                                        mr: 1
+                                        mr: 1.5
                                     }}
                                 >
                                     {recordingStatus === "inactive" && (
@@ -475,7 +486,7 @@ export default function DropDown({
                                     )}
 
                                     {recordingStatus === "recording" && (
-                                        <ProgressButton onClick={stopRecording}>
+                                        <ProgressButton isMobile={isMobile} isSmallScreen={isSmallScreen} onClick={stopRecording}>
                                             {/* progress fill behind the icon */}
                                             <Box
                                                 sx={{
@@ -486,7 +497,7 @@ export default function DropDown({
                                                     width: `${recordingProgress}%`,
                                                     backgroundColor: "#E53935",
                                                     borderRadius: "4px",
-                                                    transition: "width 100ms linear",
+                                                    transition: "width 150ms linear",
                                                     pointerEvents: "none",
                                                 }}
                                             />
@@ -512,7 +523,7 @@ export default function DropDown({
                                     )}
 
                                     {recordingStatus === "playing" && (
-                                        <ProgressButton onClick={handlePlaying}>
+                                        <ProgressButton isMobile={isMobile} isSmallScreen={isSmallScreen} onClick={handlePlaying}>
                                             <Box
                                                 sx={{
                                                     position: "absolute",
@@ -577,7 +588,7 @@ export default function DropDown({
                                     )}
 
                                     {recordingStatus === "recording" && (
-                                        <ProgressButton onClick={stopRecording} sx={{ mt: 0.5 }}>
+                                        <ProgressButton isMobile={isMobile} isSmallScreen={isSmallScreen} onClick={stopRecording} sx={{ mt: 0.5 }}>
                                             <Box
                                                 sx={{
                                                     position: "absolute",
@@ -612,7 +623,7 @@ export default function DropDown({
                                     )}
 
                                     {recordingStatus === "playing" && (
-                                        <ProgressButton onClick={handlePlaying} sx={{ mt: 0.5 }}>
+                                        <ProgressButton isMobile={isMobile} isSmallScreen={isSmallScreen} onClick={handlePlaying} sx={{ mt: 0.5 }}>
                                             <Box
                                                 sx={{
                                                     position: "absolute",

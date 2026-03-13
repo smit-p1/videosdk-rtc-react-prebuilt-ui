@@ -266,7 +266,7 @@ export default function JoinMeeting({
     const stream = await getVideoTrack({ webcamId: deviceId });
     const videoTracks = stream.getVideoTracks();
     setCustomVideoStream(stream);
-    const videoTrack = videoTracks.length ? videoTracks[0] : null;
+    const videoTrack = videoTracks?.length ? videoTracks[0] : null;
 
     setVideoTrack(videoTrack);
   };
@@ -276,7 +276,7 @@ export default function JoinMeeting({
     const stream = await getAudioTrack({ micId: deviceId });
     const audioTracks = stream.getAudioTracks();
     setCustomAudioStream(stream);
-    const audioTrack = audioTracks.length ? audioTracks[0] : null;
+    const audioTrack = audioTracks?.length ? audioTracks[0] : null;
     clearInterval(audioAnalyserIntervalRef.current);
 
     setAudioTrack(audioTrack);
@@ -309,7 +309,7 @@ export default function JoinMeeting({
       });
       const videoTracks = stream?.getVideoTracks();
       setCustomVideoStream(stream);
-      const videoTrack = videoTracks.length ? videoTracks[0] : null;
+      const videoTrack = videoTracks?.length ? videoTracks[0] : null;
       setVideoTrack(videoTrack);
       if (firstTime) {
         await setSelectedWebcam({
@@ -569,7 +569,7 @@ export default function JoinMeeting({
             alignItems: "center",
           }}
         >
-          <Grid
+          {/* <Grid
             container
             spacing={padding}
             style={{
@@ -584,14 +584,36 @@ export default function JoinMeeting({
               alignItems: "center",
               justifyContent: "center",
             }}
+          > */}
+          <Grid
+            container
+            spacing={padding}
+            style={{
+              display: "flex",
+              flex: 1,
+              // flexDirection: "column",
+              flexDirection: isXStoSM ? "row" : "column",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
           >
-            <Grid
+            {/* <Grid
               item
               xs={12}
               md={gtThenXL ? 6 : 7}
               style={{
                 display: "flex",
                 flex: 1,
+              }}
+            > */}
+            <Grid
+              item
+              xs={12}
+              style={{
+                display: "flex",
+                flex: 1,
+                width: "100%",
+                maxWidth: "700px",
               }}
             >
               <Box
@@ -765,7 +787,7 @@ export default function JoinMeeting({
                 </Box>
               </Box>
             </Grid>
-            <Grid
+            {/* <Grid
               item
               xs={12}
               style={{
@@ -782,8 +804,26 @@ export default function JoinMeeting({
                   width: "100%",
                 }}
                 px={isSmallScreen ? 2 : internalPadding}
+              > */}
+            <Grid
+              item
+              xs={12}
+              style={{
+                width: "100%",
+                maxWidth: "700px",
+                paddingTop: theme.spacing(1.5),
+              }}
+            >
+              <Box
+                style={{
+                  display: "flex",
+                  flexDirection: isMobile || isSmallScreen ? "column" : "row",
+                  gap: "12px",
+                  width: "100%",
+                  marginTop: "12px",
+                }}
               >
-                {micEnabled && <Box style={{ marginTop: (isMobile || isSmallScreen) ? "4px" : 0, flex: 1, width: (isMobile || isSmallScreen) ? "100%" : "33.333%" }}>
+                {micEnabled && <Box style={{ marginTop: (isMobile || isSmallScreen) ? "4px" : 0, flex: 1, width: (isMobile || isSmallScreen) ? "100%" : "31.999%" }}>
                   <DropDown
                     mics={mics}
                     changeMic={changeMic}
@@ -801,7 +841,7 @@ export default function JoinMeeting({
                   />
                 </Box>}
                 {!(isMobile || isSmallScreen) && (
-                  <Box style={{ marginTop: isMobile ? "4px" : 0, flex: 1, width: "33.333%" }}>
+                  <Box style={{ marginTop: isMobile ? "4px" : 0, flex: 1, width: "31.999%" }}>
                     <DropDownSpeaker
                       speakers={speakers}
                       selectedSpeaker={selectedSpeaker}
@@ -810,7 +850,7 @@ export default function JoinMeeting({
                     />
                   </Box>
                 )}
-                {webcamEnabled && <Box style={{ marginTop: (isMobile || isSmallScreen) ? "4px" : 0, flex: 1, width: (isMobile || isSmallScreen) ? "100%" : "33.333%" }}>
+                {webcamEnabled && <Box style={{ marginTop: (isMobile || isSmallScreen) ? "4px" : 0, flex: 1, width: (isMobile || isSmallScreen) ? "100%" : "31.999%" }}>
                   <DropDownCam
                     changeWebcam={changeWebcam}
                     webcams={webcams}
@@ -822,7 +862,7 @@ export default function JoinMeeting({
               </Box>
             </Grid>
 
-            <Grid
+            {/* <Grid
               item
               xs={12}
               md={isXStoSM ? 5 : meetingTitle || meetingUrl ? 5 : 6}
@@ -832,6 +872,19 @@ export default function JoinMeeting({
                 flex: 1,
                 alignItems: "center",
                 justifyContent: "center",
+              }}
+            > */}
+            <Grid
+              item
+              xs={12}
+              style={{
+                width: "100%",
+                maxWidth: "700px",
+                display: "flex",
+                flex: 1,
+                alignItems: "center",
+                justifyContent: "center",
+                paddingTop: theme.spacing(2),
               }}
             >
               <Box

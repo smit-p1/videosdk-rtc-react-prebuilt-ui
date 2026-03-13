@@ -27,12 +27,13 @@ const StyledPopoverButton = styled(Button)(({ theme, isOpen, isHovered, disabled
     textTransform: "none",
     color: isOpen ? "#FFF" : "#B4B4B4",
     backgroundColor: isOpen ? "#000" : "transparent",
-    border: isOpen ? "1px solid #E5E5E5" : "none",
+    border: "none",
+    outline: isOpen ? "1px solid #6B7280" : "none",
     opacity: disabled ? 0.5 : 1,
     "&:hover": {
         backgroundColor: disabled ? "transparent" : "#000",
         border: disabled ? "none" : "1px solid #E5E5E5",
-        color: disabled ? "#B4B4B4" : "#FFF",
+        outline: disabled ? "none" : "1px solid #6B7280",
     },
     "&:focus": {
         outline: "none",
@@ -92,11 +93,16 @@ export default function DropDownCam({
                 onClick={isCameraPermissionAllowed === true ? handleClick : undefined}
                 sx={{ pointerEvents: isCameraPermissionAllowed === true ? "auto" : "none" }}
             >
-                <Box sx={{ display: "flex", alignItems: "center", width: "100%" }}>
-                    <DropCAM fillColor={isHovered || open ? "#FFF" : "#B4B4B4"} />
+                <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", width: "100%" }}>
+                    <DropCAM
+                        style={{
+                            marginBottom: "2px",
+                        }}
+                        fillColor={isHovered || open ? "#FFF" : "#B4B4B4"}
+                    />
                     <Typography
                         sx={{
-                            ml: 3.5,
+                            ml: 2,
                             overflow: "hidden",
                             textOverflow: "ellipsis",
                             whiteSpace: "nowrap",
@@ -109,10 +115,10 @@ export default function DropDownCam({
                     </Typography>
                     <ChevronDownIcon
                         style={{
-                            marginLeft: "32px",
+                            marginLeft: "10px",
                             height: "20px",
-                            width: "40px",
-                            marginTop: "4px",
+                            width: "20px",
+                            // marginTop: "4px",
                             color: open ? "#FFF" : "#B4B4B4",
                         }}
                     />

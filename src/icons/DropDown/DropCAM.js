@@ -1,6 +1,6 @@
 import React from "react";
 
-function DropCAM({fillColor}) {
+function DropCAM({ fillColor, ...props }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -9,6 +9,7 @@ function DropCAM({fillColor}) {
       fill="none"
       viewBox="0 0 14 14"
       className="ml-1 mt-0.5"
+      {...props}
     >
       <g
         stroke={fillColor}
