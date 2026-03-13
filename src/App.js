@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useRef } from "react";
 import MeetingContainer from "./meetingContainer/MeetingContainer";
 import { MeetingProvider } from "@videosdk.live/react-sdk";
 import {
@@ -48,13 +48,21 @@ const App = () => {
   });
 
   const [meetingLeft, setMeetingLeft] = useState(false);
-
+  const notificationAudioRef = useRef(null);
+  const isPlayingRef = useRef(false);
   const playNotificationErr = async () => {
-    const errAudio = new Audio(
-      `https://static.videosdk.live/prebuilt/notification_err.mp3`
-    );
-
-    await errAudio.play();
+    if (isPlayingRef.current) return;
+    if (!notificationAudioRef.current) {
+      notificationAudioRef.current = new Audio(
+        `https://static.videosdk.live/prebuilt/notification_err.mp3`
+      );
+    }
+    isPlayingRef.current = true;
+    notificationAudioRef.current.currentTime = 0;
+    notificationAudioRef.current.play();
+    notificationAudioRef.current.onended = () => {
+      isPlayingRef.current = false;
+    };
   };
 
   const getParams = ({ maxGridSize }) => {
