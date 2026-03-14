@@ -120,10 +120,9 @@ export default function DropDown({
     const [anchorEl, setAnchorEl] = useState(null);
     const isMobile = useIsMobile();
     const isSmallScreen = useIsMobile(900);
-
+    const isLargeScreen = useIsMobile(1150);
+    const anchorWidthRef = useRef(null);
     const open = Boolean(anchorEl);
-
-
     const audioTrackRef = useRef();
     const intervalRef = useRef();
     const audioAnalyserIntervalRef = useRef();
@@ -297,6 +296,7 @@ export default function DropDown({
     };
 
     const handleClick = (event) => {
+        anchorWidthRef.current = event.currentTarget.offsetWidth;
         setAnchorEl(event.currentTarget);
     };
 
@@ -367,7 +367,7 @@ export default function DropDown({
                 }}
                 sx={{
                     "& .MuiPaper-root": {
-                        width: anchorEl ? anchorEl.offsetWidth : "auto",
+                        width: anchorWidthRef.current ?? "auto",
                     },
                 }}
             >
@@ -427,10 +427,12 @@ export default function DropDown({
                                 my: 1,
                                 color: "#FFF",
                                 display: "flex",
-                                flexDirection: isMobile || isSmallScreen ? "column" : "row",
+                                flexDirection: isMobile ? "column" : isLargeScreen ? "column" : "row",
                                 width: "100%",
                                 mb: 2,
                                 pl: 1,
+                                alignItems: "center",
+                                justifyContent: "center",
                             }}
                         >
                             <Box
@@ -439,18 +441,19 @@ export default function DropDown({
                                     flexDirection: "row",
                                     justifyContent: "center",
                                     alignItems: "center",
-                                    width: isMobile || isSmallScreen ? "100%" : "65.666%",
+                                    width: isMobile || isLargeScreen || isSmallScreen ? "90%" : "60%",
+                                    mr: isMobile ? 0 : isLargeScreen || isSmallScreen ? 2 : 0,
                                 }}
                             >
-                                <Box sx={{ mr: 1, mt: 0 }}>
+                                <Box sx={{ mr: 0.5, mt: 0 }}>
                                     <TestMic />
                                 </Box>
 
                                 <Box
                                     sx={{
-                                        width: isMobile || isSmallScreen ? "calc(100% - 40px)" : "144px",
+                                        width: isMobile ? "calc(100% - 40px)" : "144px",
                                         mt: 0,
-                                        mr: isMobile || isSmallScreen ? 2.5 : 1,
+                                        mr: isMobile ? 2.5 : 1,
                                         backgroundColor: "#6F767E",
                                         borderRadius: "9999px",
                                         height: "4px",
@@ -468,26 +471,26 @@ export default function DropDown({
                                 </Box>
                             </Box>
 
-                            {!isMobile && !isSmallScreen && (
+                            {!isMobile && (
                                 <Box
                                     sx={{
                                         width: "33.333%",
                                         display: "flex",
                                         justifyContent: "center",
-                                        mr: 1.5
+                                        mr: 1,
+                                        mt: isLargeScreen || isSmallScreen ? 0.8 : 0,
                                     }}
                                 >
                                     {recordingStatus === "inactive" && (
-                                        <RecordButton onClick={startRecording}>Record</RecordButton>
+                                        <RecordButton onClick={startRecording} sx={{ mr: 1.5 }} >Record</RecordButton>
                                     )}
 
                                     {recordingStatus === "stopped recording" && (
-                                        <RecordButton onClick={handlePlaying}>Play</RecordButton>
+                                        <RecordButton onClick={handlePlaying} sx={{ mr: 1.5 }}>Play</RecordButton>
                                     )}
 
                                     {recordingStatus === "recording" && (
-                                        <ProgressButton isMobile={isMobile} isSmallScreen={isSmallScreen} onClick={stopRecording}>
-                                            {/* progress fill behind the icon */}
+                                        <ProgressButton isMobile={isMobile} onClick={stopRecording}>
                                             <Box
                                                 sx={{
                                                     position: "absolute",
@@ -523,7 +526,7 @@ export default function DropDown({
                                     )}
 
                                     {recordingStatus === "playing" && (
-                                        <ProgressButton isMobile={isMobile} isSmallScreen={isSmallScreen} onClick={handlePlaying}>
+                                        <ProgressButton isMobile={isMobile} onClick={handlePlaying}>
                                             <Box
                                                 sx={{
                                                     position: "absolute",
@@ -552,7 +555,7 @@ export default function DropDown({
                                 </Box>
                             )}
 
-                            {(isMobile || isSmallScreen) && (
+                            {(isMobile) && (
                                 <Box
                                     sx={{
                                         display: "flex",
@@ -560,6 +563,7 @@ export default function DropDown({
                                         mt: 0.5,
                                         alignItems: "center",
                                         justifyContent: "center",
+                                        width: "80%",
                                     }}
                                 >
                                     {recordingStatus === "recording" && (
@@ -588,7 +592,7 @@ export default function DropDown({
                                     )}
 
                                     {recordingStatus === "recording" && (
-                                        <ProgressButton isMobile={isMobile} isSmallScreen={isSmallScreen} onClick={stopRecording} sx={{ mt: 0.5 }}>
+                                        <ProgressButton isMobile={isMobile} onClick={stopRecording} sx={{ mt: 0.5 }}>
                                             <Box
                                                 sx={{
                                                     position: "absolute",
@@ -623,7 +627,7 @@ export default function DropDown({
                                     )}
 
                                     {recordingStatus === "playing" && (
-                                        <ProgressButton isMobile={isMobile} isSmallScreen={isSmallScreen} onClick={handlePlaying} sx={{ mt: 0.5 }}>
+                                        <ProgressButton isMobile={isMobile} onClick={handlePlaying} sx={{ mt: 0.5 }}>
                                             <Box
                                                 sx={{
                                                     position: "absolute",

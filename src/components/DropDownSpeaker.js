@@ -82,6 +82,7 @@ export default function DropDownSpeaker({
     const [isHovered, setIsHovered] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
     const audioRef = useRef(null);
+    const anchorWidthRef = useRef(null);
 
     const open = Boolean(anchorEl);
 
@@ -141,6 +142,7 @@ export default function DropDownSpeaker({
     };
 
     const handleClick = (event) => {
+        anchorWidthRef.current = event.currentTarget.offsetWidth;
         setAnchorEl(event.currentTarget);
     };
 
@@ -202,7 +204,7 @@ export default function DropDownSpeaker({
                 }}
                 sx={{
                     "& .MuiPaper-root": {
-                        width: anchorEl ? anchorEl.offsetWidth : "auto",
+                        width: anchorWidthRef.current ?? "auto",
                     },
                 }}
             >

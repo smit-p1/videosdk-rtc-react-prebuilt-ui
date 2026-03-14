@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState, useRef } from "react";
 import {
     Popover,
     Button,
@@ -74,8 +74,10 @@ export default function DropDownCam({
     const [anchorEl, setAnchorEl] = useState(null);
 
     const open = Boolean(anchorEl);
+    const anchorWidthRef = useRef(null);
 
     const handleClick = (event) => {
+        anchorWidthRef.current = event.currentTarget.offsetWidth;
         setAnchorEl(event.currentTarget);
     };
 
@@ -139,7 +141,7 @@ export default function DropDownCam({
                 }}
                 sx={{
                     "& .MuiPaper-root": {
-                        width: anchorEl ? anchorEl.offsetWidth : "auto",
+                        width: anchorWidthRef.current ?? "auto",
                     },
                 }}
             >
