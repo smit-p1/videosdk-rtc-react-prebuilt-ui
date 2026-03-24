@@ -86,14 +86,31 @@ export default function DropDownSpeaker({
 
     const open = Boolean(anchorEl);
 
+    const timeupdateHandlerRef = useRef(null);
+    const endedHandlerRef = useRef(null);
+
+    const cleanupAudioListeners = () => {
+        if (audioRef.current) {
+            if (timeupdateHandlerRef.current) {
+                audioRef.current.removeEventListener("timeupdate", timeupdateHandlerRef.current);
+            }
+            if (endedHandlerRef.current) {
+                audioRef.current.removeEventListener("ended", endedHandlerRef.current);
+            }
+        }
+        timeupdateHandlerRef.current = null;
+        endedHandlerRef.current = null;
+    };
+
     const testSpeakers = () => {
         // If already playing, stop it
         if (isPlaying) {
             if (audioRef.current) {
                 audioRef.current.pause();
                 audioRef.current.currentTime = 0;
-                audioRef.current = null;
             }
+            cleanupAudioListeners();
+            audioRef.current = null;
             setAudioProgress(0);
             setIsPlaying(false);
             return;
@@ -104,24 +121,31 @@ export default function DropDownSpeaker({
         if (audioRef.current) {
             audioRef.current.pause();
             audioRef.current.currentTime = 0;
+            cleanupAudioListeners();
         }
-
         // const audio = new Audio(`https://static.videosdk.live/prebuilt/test_sound.mp3`);
-        const audio = new Audio(`../test_sound.mp3`);
+        const audio = new Audio(`${process.env.PUBLIC_URL || ""}/test_sound.mp3`);
         audioRef.current = audio;
+
+        const onTimeUpdate = () => {
+            const progress = (audio.currentTime / audio.duration) * 100;
+            setAudioProgress(progress);
+        };
+        const onEnded = () => {
+            setAudioProgress(0);
+            setIsPlaying(false);
+            cleanupAudioListeners();
+            audioRef.current = null;
+        };
+
+        timeupdateHandlerRef.current = onTimeUpdate;
+        endedHandlerRef.current = onEnded;
 
         const startPlay = () => {
             audio.play();
             setIsPlaying(true);
-            audio.addEventListener("timeupdate", () => {
-                const progress = (audio.currentTime / audio.duration) * 100;
-                setAudioProgress(progress);
-            });
-            audio.addEventListener("ended", () => {
-                setAudioProgress(0);
-                setIsPlaying(false);
-                audioRef.current = null;
-            });
+            audio.addEventListener("timeupdate", onTimeUpdate);
+            audio.addEventListener("ended", onEnded);
         };
 
         try {
@@ -148,6 +172,14 @@ export default function DropDownSpeaker({
 
     const handleClose = () => {
         setAnchorEl(null);
+        if (audioRef.current) {
+            audioRef.current.pause();
+            audioRef.current.currentTime = 0;
+        }
+        setAudioProgress(0);
+        setIsPlaying(false);
+        cleanupAudioListeners();
+        audioRef.current = null;
     };
 
     return (

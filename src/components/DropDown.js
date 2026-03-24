@@ -126,6 +126,7 @@ export default function DropDown({
     const audioTrackRef = useRef();
     const intervalRef = useRef();
     const audioAnalyserIntervalRef = useRef();
+    const audioContextRef = useRef(null);
     const mediaRecorder = useRef(null);
     const stopTimeoutRef = useRef(null);
 
@@ -160,8 +161,14 @@ export default function DropDown({
     }, [didDeviceChange]);
 
     const analyseAudio = (audioTrack) => {
+        if (audioContextRef.current) {
+            audioContextRef.current.close().catch(() => { });
+            audioContextRef.current = null;
+        }
+
         const audioStream = new MediaStream([audioTrack]);
         const audioContext = new AudioContext();
+        audioContextRef.current = audioContext;
         const audioSource = audioContext.createMediaStreamSource(audioStream);
         const analyser = audioContext.createAnalyser();
 
@@ -184,9 +191,28 @@ export default function DropDown({
 
     const stopAudioAnalyse = () => {
         clearInterval(audioAnalyserIntervalRef.current);
+        if (audioContextRef.current) {
+            audioContextRef.current.close().catch(() => { });
+            audioContextRef.current = null;
+        }
     };
 
     const audioRef = useRef(null);
+    const timeupdateHandlerRef = useRef(null);
+    const endedHandlerRef = useRef(null);
+
+    const cleanupAudioListeners = () => {
+        if (audioRef.current) {
+            if (timeupdateHandlerRef.current) {
+                audioRef.current.removeEventListener("timeupdate", timeupdateHandlerRef.current);
+            }
+            if (endedHandlerRef.current) {
+                audioRef.current.removeEventListener("ended", endedHandlerRef.current);
+            }
+        }
+        timeupdateHandlerRef.current = null;
+        endedHandlerRef.current = null;
+    };
 
     const handlePlaying = () => {
         if (recordingStatus === "playing") {
@@ -194,6 +220,7 @@ export default function DropDown({
             if (audioRef.current) {
                 audioRef.current.pause();
             }
+            cleanupAudioListeners();
             setAudioProgress(0);
             setRecordingStatus("stopped recording");
             return;
@@ -205,18 +232,28 @@ export default function DropDown({
         const audioTags = document.getElementsByTagName("audio");
         for (let i = 0; i < audioTags.length; i++) {
             const tag = audioTags.item(i);
+            cleanupAudioListeners();
             audioRef.current = tag;
+
+            const onTimeUpdate = () => {
+                const progress =
+                    (tag.currentTime / recordingDuration) * 100;
+                setAudioProgress(progress);
+            };
+
+            const onEnded = () => {
+                setAudioProgress(0);
+                setRecordingStatus("stopped recording");
+                cleanupAudioListeners();
+            };
+
+            timeupdateHandlerRef.current = onTimeUpdate;
+            endedHandlerRef.current = onEnded;
+
             const playSrc = () => {
                 tag.play();
-                tag.addEventListener("timeupdate", () => {
-                    const progress =
-                        (tag.currentTime / recordingDuration) * 100;
-                    setAudioProgress(progress);
-                });
-                tag.addEventListener("ended", () => {
-                    setAudioProgress(0);
-                    setRecordingStatus("stopped recording");
-                });
+                tag.addEventListener("timeupdate", onTimeUpdate);
+                tag.addEventListener("ended", onEnded);
             };
             if (tag.setSinkId && selectedSpeaker?.id) {
                 tag.setSinkId(selectedSpeaker.id).then(playSrc).catch(playSrc);
@@ -308,8 +345,13 @@ export default function DropDown({
         ) {
             stopRecording();
         }
+        if (audioRef.current) {
+            audioRef.current.pause();
+        }
         setRecordingProgress(0);
+        setAudioProgress(0);
         setRecordingStatus("inactive");
+        cleanupAudioListeners();
     };
     return (
         <Box sx={{ width: "100%", cursor: isMicrophonePermissionAllowed === true ? "pointer" : "not-allowed" }}>

@@ -145,19 +145,13 @@ export default function JoinMeeting({
 
   useEffect(() => {
     if (micOn && micEnabled) {
-      audioTrackRef.current = audioTrack;
-      startMuteListener();
-    }
-  }, [micOn, audioTrack]);
-
-  useEffect(() => {
-    if (micOn && micEnabled) {
       // Close the existing audio track if there's a new one
       if (audioTrackRef.current && audioTrackRef.current !== audioTrack) {
         audioTrackRef.current.stop();
       }
 
       audioTrackRef.current = audioTrack;
+      startMuteListener();
 
       if (audioTrack) {
         const audioSrcObject = new MediaStream([audioTrack]);
@@ -213,7 +207,23 @@ export default function JoinMeeting({
 
   useEffect(() => {
     checkMediaPermission();
-    return () => { };
+    return () => {
+      if (videoTrackRef.current) {
+        videoTrackRef.current.stop();
+        videoTrackRef.current = null;
+      }
+      if (audioTrackRef.current) {
+        audioTrackRef.current.stop();
+        audioTrackRef.current = null;
+      }
+      if (videoPlayerRef.current) {
+        videoPlayerRef.current.srcObject = null;
+      }
+      if (audioPlayerRef.current) {
+        audioPlayerRef.current.srcObject = null;
+      }
+      clearInterval(audioAnalyserIntervalRef.current);
+    };
   }, []);
 
   const videoTrackRef = useRef();
@@ -419,12 +429,6 @@ export default function JoinMeeting({
       }
     }
   };
-
-  useEffect(() => {
-    audioTrackRef.current = audioTrack;
-
-    startMuteListener();
-  }, [audioTrack]);
 
   const isFirefox = navigator.userAgent.toLowerCase().indexOf("firefox") > -1;
   async function requestAudioVideoPermission(mediaType) {
