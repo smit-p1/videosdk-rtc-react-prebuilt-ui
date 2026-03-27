@@ -124,7 +124,6 @@ export default function JoinMeeting({
     speakers: [],
   });
   const [boxHeight, setBoxHeight] = useState(0);
-  const audioAnalyserIntervalRef = useRef();
   const [videoTrack, setVideoTrack] = useState(null);
   const [audioTrack, setAudioTrack] = useState(null);
   const videoPlayerRef = useRef();
@@ -207,23 +206,7 @@ export default function JoinMeeting({
 
   useEffect(() => {
     checkMediaPermission();
-    return () => {
-      if (videoTrackRef.current) {
-        videoTrackRef.current.stop();
-        videoTrackRef.current = null;
-      }
-      if (audioTrackRef.current) {
-        audioTrackRef.current.stop();
-        audioTrackRef.current = null;
-      }
-      if (videoPlayerRef.current) {
-        videoPlayerRef.current.srcObject = null;
-      }
-      if (audioPlayerRef.current) {
-        audioPlayerRef.current.srcObject = null;
-      }
-      clearInterval(audioAnalyserIntervalRef.current);
-    };
+    return () => { };
   }, []);
 
   const videoTrackRef = useRef();
@@ -286,8 +269,6 @@ export default function JoinMeeting({
     const audioTracks = stream.getAudioTracks();
     setCustomAudioStream(stream);
     const audioTrack = audioTracks?.length ? audioTracks[0] : null;
-    clearInterval(audioAnalyserIntervalRef.current);
-
     setAudioTrack(audioTrack);
   };
   const getDefaultMediaTracks = async ({
